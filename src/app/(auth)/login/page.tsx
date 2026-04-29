@@ -16,7 +16,7 @@ export default function LoginPage() {
           <CardDescription>Enter your email below to access your VoteFlow dashboard</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form action={login} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" name="email" type="email" placeholder="m@example.com" required className="bg-input/50" />
@@ -27,7 +27,7 @@ export default function LoginPage() {
               </div>
               <Input id="password" name="password" type="password" required className="bg-input/50" />
             </div>
-            <Button formAction={login} className="w-full font-semibold shadow-lg shadow-primary/20">
+            <Button type="submit" className="w-full font-semibold shadow-lg shadow-primary/20">
               Sign In
             </Button>
           </form>

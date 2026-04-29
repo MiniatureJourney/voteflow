@@ -16,7 +16,7 @@ export default function RegisterPage() {
           <CardDescription>Enter your details to create your VoteFlow account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form action={signup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="full_name">Full Name</Label>
               <Input id="full_name" name="full_name" type="text" placeholder="Jane Doe" required className="bg-input/50" />
@@ -29,7 +29,7 @@ export default function RegisterPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required className="bg-input/50" />
             </div>
-            <Button formAction={signup} className="w-full font-semibold shadow-lg shadow-primary/20">
+            <Button type="submit" className="w-full font-semibold shadow-lg shadow-primary/20">
               Create Account
             </Button>
           </form>
