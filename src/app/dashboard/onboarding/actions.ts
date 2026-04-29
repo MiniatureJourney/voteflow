@@ -69,16 +69,42 @@ export async function getRealtimeInsights(query: string) {
     const prompt = `You are a factual, real-time civic AI news assistant. 
 Using Google Search grounding, identify the most recent breaking local news headlines, candidate profiles, and important administrative timelines regarding elections in: "${query}". 
 Extract exactly 3 distinct local election insights or news briefs. 
-If there are absolutely no active or scheduled upcoming elections or election news at this place, state: "There are currently no active or upcoming elections scheduled for this location."
-Format your output strictly as separate independent news headlines, omitting excess introductory text.`;
+If there are absolutely no active or scheduled upcoming elections or election news at this place, return a message stating that.
+Output ONLY a JSON array of strings. Example:
+[
+  "Headline or insight 1...",
+  "Headline or insight 2...",
+  "Headline or insight 3..."
+]
+Do not include markdown formatting blocks like \`\`\`json in the raw output unless it's necessary.`;
     
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    let text = result.response.text().trim();
     
-    return text.split('\n\n').map(t => t.trim()).filter(t => t.length > 0);
+    if (text.startsWith('\`\`\`json')) {
+      text = text.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+    } else if (text.startsWith('\`\`\`')) {
+      text = text.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+    }
+
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) {
+      return parsed.map(item => String(item));
+    }
+    
+    return [text];
   } catch (e) {
     console.error("Insights AI error:", e);
-    return ["Unable to stream active local model updates."];
+    // Fallback to splitting if JSON parsing failed but text exists
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const result = await model.generateContent(`Give me exactly 3 short news items about elections in ${query}. Separate them with double newlines.`);
+      const text = result.response.text().trim();
+      return text.split('\n\n').map(t => t.trim()).filter(t => t.length > 5);
+    } catch {
+      return ["Unable to stream active local model updates at this time."];
+    }
   }
 }
 
