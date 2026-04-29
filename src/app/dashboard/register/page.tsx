@@ -6,7 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { VoiceInput } from "@/components/dashboard/VoiceInput";
 
+import { useJourneyStore } from "@/store/journeyStore";
+import { useRouter } from "next/navigation";
+
 export default function RegistrationGuidance() {
+  const setJourneyStep = useJourneyStore((state) => state.setStep);
+  const setRegistrationState = useJourneyStore((state) => state.setRegistration);
+  const router = useRouter();
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -38,8 +44,17 @@ export default function RegistrationGuidance() {
             </div>
           </div>
           <div className="flex justify-between pt-6 border-t border-border mt-4">
-            <Button variant="outline">Back</Button>
-            <Button className="shadow-lg shadow-primary/20">Save & Continue</Button>
+            <Button onClick={() => router.push('/dashboard/eligibility')} variant="outline">Back</Button>
+            <Button 
+              onClick={() => {
+                setRegistrationState(true);
+                setJourneyStep('prep');
+                router.push('/dashboard/documents');
+              }} 
+              className="shadow-lg shadow-primary/20 font-semibold"
+            >
+              Save & Continue
+            </Button>
           </div>
         </CardContent>
       </Card>

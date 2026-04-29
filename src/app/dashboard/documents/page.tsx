@@ -5,14 +5,20 @@ import { UploadCloud, FileCheck2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { useJourneyStore } from "@/store/journeyStore";
+import { useRouter } from "next/navigation";
+
 export default function DocumentUpload() {
   const [status, setStatus] = useState<'idle' | 'scanning' | 'success'>('idle');
+  const setJourneyStep = useJourneyStore((state) => state.setStep);
+  const router = useRouter();
 
   const handleUpload = () => {
     setStatus('scanning');
     toast.info("OCR Engine analyzing document...");
     setTimeout(() => {
       setStatus('success');
+      setJourneyStep('voting_day');
       toast.success("Document verified: Valid State ID");
     }, 2500);
   };
@@ -55,6 +61,9 @@ export default function DocumentUpload() {
               </div>
               <h3 className="text-2xl font-semibold text-primary">Verification Complete</h3>
               <p className="text-sm text-muted-foreground mt-2">ID confirmed. You are ready to vote!</p>
+              <Button onClick={() => router.push('/dashboard')} size="lg" className="mt-6 shadow-lg shadow-primary/20 font-semibold">
+                Return to Dashboard
+              </Button>
             </div>
           )}
         </CardContent>

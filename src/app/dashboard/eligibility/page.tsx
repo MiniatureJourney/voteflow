@@ -8,21 +8,30 @@ import { VoiceInput } from "@/components/dashboard/VoiceInput";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { EligibilityEngine } from "@/lib/engines/EligibilityEngine";
 
+import { useJourneyStore } from "@/store/journeyStore";
+import { useRouter } from "next/navigation";
+
 export default function EligibilityChecker() {
   const [result, setResult] = useState<{ eligible: boolean; reasons: string[] } | null>(null);
+  const setJourneyStep = useJourneyStore((state) => state.setStep);
+  const setEligibilityState = useJourneyStore((state) => state.setEligibility);
+  const router = useRouter();
 
   const checkEligibility = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const dob = formData.get("dob") as string;
     
-    // Using mock CA rule for UI demo
     const res = EligibilityEngine.evaluate(
       { dob, citizenship: true }, 
       { region_code: 'US-CA', min_age: 18, requires_photo_id: false, allows_mail_in: true },
       "2026-11-03"
     );
     setResult(res);
+    if (res.eligible) {
+      setEligibilityState(true);
+      setJourneyStep('registration');
+    }
   };
 
   return (
@@ -58,6 +67,11 @@ export default function EligibilityChecker() {
                 <ul className="mt-2 text-sm text-muted-foreground list-disc pl-5">
                   {result.reasons.map((r, i) => <li key={i}>{r}</li>)}
                 </ul>
+              )}
+              {result.eligible && (
+                <Button onClick={() => router.push('/dashboard/register')} className="mt-4 shadow-lg shadow-primary/20 w-full md:w-auto font-semibold">
+                  Continue to Registration
+                </Button>
               )}
             </div>
           </CardContent>
