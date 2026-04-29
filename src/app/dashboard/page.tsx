@@ -70,7 +70,7 @@ export default async function DashboardMain() {
         
         {/* Deadlines */}
         <div className="col-span-1">
-          <DeadlinesPanel />
+          <DeadlinesPanel defaultZip={defaultZip} />
         </div>
 
         {/* AI Insights */}

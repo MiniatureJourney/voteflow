@@ -81,3 +81,48 @@ Format your output strictly as separate independent news headlines, omitting exc
     return ["Unable to stream active local model updates."];
   }
 }
+
+export async function getRealtimeDeadlines(query: string) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return { hasElections: false, reminders: [], nextElectionYear: null, noElectionMessage: "API Key missing." };
+  
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash", 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tools: [{ googleSearch: {} }] as any
+    });
+    
+    const today = new Date().toISOString().split('T')[0];
+    const prompt = `You are a civic AI providing election deadlines. Today's date is ${today}.
+Find the upcoming election deadlines for the location: "${query}".
+If there are upcoming elections, output a JSON object with:
+{
+  "hasElections": true,
+  "reminders": [
+    { "message": "Event Name", "daysRemaining": number (calculated based on today), "type": "CRITICAL" | "WARNING" | "INFO" }
+  ]
+}
+If there are NO upcoming elections, determine the year of the next major election for this area and output:
+{
+  "hasElections": false,
+  "nextElectionYear": 2029,
+  "reminders": []
+}
+Output ONLY valid JSON. Do not include markdown blocks like \`\`\`json.`;
+
+    const result = await model.generateContent(prompt);
+    let text = result.response.text().trim();
+    if (text.startsWith('\`\`\`json')) {
+      text = text.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+    } else if (text.startsWith('\`\`\`')) {
+      text = text.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+    }
+    
+    return JSON.parse(text);
+  } catch (e) {
+    console.error("Deadlines AI error:", e);
+    return { hasElections: false, reminders: [], nextElectionYear: null, noElectionMessage: "Unable to stream real-time deadlines." };
+  }
+}
