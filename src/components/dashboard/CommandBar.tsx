@@ -50,9 +50,9 @@ export function CommandBar() {
             <User className="mr-2 h-4 w-4" />
             <span>Update Registration</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/booth"))}>
+          <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/polling-process"))}>
             <MapPin className="mr-2 h-4 w-4" />
-            <span>Find Polling Booth</span>
+            <span>View Polling Process</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/documents"))}>
             <CheckCircle2 className="mr-2 h-4 w-4" />

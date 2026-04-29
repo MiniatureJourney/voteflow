@@ -31,7 +31,7 @@ export class JourneyStateMachine {
       case 'VERIFY':
         return { label: 'Verify Documents', href: '/dashboard/documents', percentage: 60 };
       case 'READY':
-        return { label: 'View Polling Booth', href: '/dashboard/booth', percentage: 90 };
+        return { label: 'View Polling Process', href: '/dashboard/polling-process', percentage: 90 };
       case 'VOTED':
         return { label: 'View Post-Election Info', href: '/dashboard/results', percentage: 100 };
     }
