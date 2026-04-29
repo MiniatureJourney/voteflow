@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">VoteFlow</string>
+    <string name="title_activity_main">VoteFlow</string>
+    <string name="package_name">com.voteflow.app</string>
+    <string name="custom_url_scheme">com.voteflow.app</string>
+</resources>

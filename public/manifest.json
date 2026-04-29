@@ -1,0 +1,22 @@
+{
+  "name": "VoteFlow",
+  "short_name": "VoteFlow",
+  "description": "AI-Powered Civic Assistant",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#111322",
+  "theme_color": "#21C55D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=voteflow",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=voteflow",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
