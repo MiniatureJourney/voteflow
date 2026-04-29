@@ -55,13 +55,13 @@ export async function submitOnboarding(data: z.infer<typeof onboardingSchema>) {
 }
 
 export async function getRealtimeInsights(query: string) {
-  const apiKey = process.env.GEMINI_API_KEY || "AIzaSyCdqwhR36TChH4jWESU9PTNIf9rd0cGPEg";
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return ["GEMINI_API_KEY missing."];
   
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-pro", 
+      model: "gemini-2.5-flash", 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tools: [{ googleSearch: {} }] as any
     });
