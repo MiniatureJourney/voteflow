@@ -8,11 +8,16 @@ import { VoiceInput } from "@/components/dashboard/VoiceInput";
 
 import { useJourneyStore } from "@/store/journeyStore";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 export default function RegistrationGuidance() {
   const setJourneyStep = useJourneyStore((state) => state.setStep);
   const setRegistrationState = useJourneyStore((state) => state.setRegistration);
   const router = useRouter();
+  const [zipCode, setZipCode] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -40,20 +45,34 @@ export default function RegistrationGuidance() {
             </div>
             <div className="space-y-2">
               <Label>Zip Code</Label>
-              <Input placeholder="10001" className="bg-input/50" />
+              <Input value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="10001" className="bg-input/50" />
             </div>
           </div>
           <div className="flex justify-between pt-6 border-t border-border mt-4">
             <Button onClick={() => router.push('/dashboard/eligibility')} variant="outline">Back</Button>
             <Button 
-              onClick={() => {
-                setRegistrationState(true);
-                setJourneyStep('prep');
-                router.push('/dashboard/documents');
+              disabled={loading}
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const supabase = createClient();
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (user && zipCode) {
+                    await supabase.from('profiles').upsert({ id: user.id, zip_code: zipCode });
+                  }
+                  setRegistrationState(true);
+                  setJourneyStep('prep');
+                  toast.success("Address registered successfully!");
+                  router.push('/dashboard/documents');
+                } catch {
+                  toast.error("Failed to save profile data.");
+                } finally {
+                  setLoading(false);
+                }
               }} 
               className="shadow-lg shadow-primary/20 font-semibold"
             >
-              Save & Continue
+              {loading ? "Saving..." : "Save & Continue"}
             </Button>
           </div>
         </CardContent>

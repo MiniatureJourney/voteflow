@@ -21,11 +21,17 @@ export default function EligibilityChecker() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const dob = formData.get("dob") as string;
+    const zip = formData.get("zip") as string;
     
+    const isWB = zip.startsWith('700') || zip.startsWith('711');
+    const rule = isWB 
+      ? { region_code: 'IN-WB', min_age: 18, requires_photo_id: true, allows_mail_in: false }
+      : { region_code: 'US-CA', min_age: 18, requires_photo_id: false, allows_mail_in: true };
+
     const res = EligibilityEngine.evaluate(
       { dob, citizenship: true }, 
-      { region_code: 'US-CA', min_age: 18, requires_photo_id: false, allows_mail_in: true },
-      "2026-11-03"
+      rule,
+      isWB ? "2026-05-10" : "2026-11-03"
     );
     setResult(res);
     if (res.eligible) {
@@ -48,6 +54,10 @@ export default function EligibilityChecker() {
             <div className="space-y-2">
               <Label htmlFor="dob">Date of Birth</Label>
               <Input name="dob" id="dob" type="date" required className="bg-input/50" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="zip">Postal / Zip Code</Label>
+              <Input name="zip" id="zip" type="text" placeholder="700001 or 90210" required className="bg-input/50" />
             </div>
             <div className="flex items-center gap-4 pt-4 border-t border-border mt-6">
               <Button type="submit" className="shadow-lg shadow-primary/20">Check Status</Button>
