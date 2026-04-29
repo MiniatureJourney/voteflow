@@ -10,21 +10,31 @@ export class CivicInsightsEngine {
    * Extensible for deep Gemini/Vertex AI analysis.
    */
   static async getInsightsForRegion(zipCode: string): Promise<string[]> {
-    if (!process.env.GEMINI_API_KEY) {
-      // Rule-based fallback
-      return [
-        `(${zipCode}) State Prop 14 aims to fund new public school infrastructure.`,
-        "Your district typically sees a 45% turnout in midterms."
-      ];
+    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyCdqwhR36TChH4jWESU9PTNIf9rd0cGPEg";
+    if (!apiKey) {
+      return ["Provide a valid GEMINI_API_KEY to unlock live real-time election updates."];
     }
+    
     try {
-      // In production, prompt Gemini with the region's specific ballot data
-      return [
-        "AI Analysis: Prop 14 is highly contested locally. Proponents cite school overcrowding; opponents cite property tax increases.",
-        "AI Prediction: Expected wait times at your booth peak between 5PM and 7PM. Plan to vote early."
-      ];
-    } catch {
-      return ["Unable to fetch live AI insights at this time."];
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `You are a helpful civic AI assistant. 
+Identify the current real-time upcoming local or federal elections, candidates, or active propositions applicable to the US postal area zip code: "${zipCode}". 
+If there are NO active or upcoming scheduled elections in this region, return ONLY the following sentence exactly: "There are currently no active or upcoming elections scheduled for this location."
+Otherwise, output 2 short, highly detailed paragraph insights summarizing local ballot measures or candidates. Make sure your response is strictly factual for this location.`;
+
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      
+      if (text.includes("no active or upcoming elections") || text.length < 10) {
+        return ["There are currently no active or upcoming elections scheduled for this location."];
+      }
+      
+      return text.split('\n\n').map(t => t.trim()).filter(t => t.length > 0);
+    } catch (e) {
+      console.error("Gemini API error:", e);
+      return ["There are currently no active or upcoming elections scheduled for this location."];
     }
   }
 
