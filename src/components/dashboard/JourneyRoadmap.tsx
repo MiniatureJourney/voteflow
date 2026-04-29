@@ -5,8 +5,9 @@ import { JourneyStateMachine, JourneyState } from "@/lib/engines/JourneyStateMac
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const steps: { id: JourneyState; label: string }[] = [
   { id: 'NOT_REGISTERED', label: 'Check Eligibility' },
@@ -66,9 +67,9 @@ export function JourneyRoadmap() {
             <h4 className="font-semibold text-foreground">Next Action Required</h4>
             <p className="text-sm text-muted-foreground">{action.label}</p>
           </div>
-          <Button onClick={() => router.push(action.href)} className="shadow-lg shadow-primary/20 group">
+          <Link href={action.href} className={buttonVariants({ variant: "default", className: "shadow-lg shadow-primary/20 group" })}>
             Start <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

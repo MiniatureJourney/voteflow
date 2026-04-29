@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, MapPin, Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getRealtimeInsights } from "@/app/dashboard/onboarding/actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,26 @@ interface InsightsPanelProps {
   defaultZip?: string;
 }
 
+// Simple in-memory cache to prevent redundant Gemini API calls
+const insightsCache: Record<string, string[]> = {};
+
 export function InsightsPanel({ defaultZip = "10001" }: InsightsPanelProps) {
   const [query, setQuery] = useState(defaultZip);
   const [insights, setInsights] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchInsights = async (searchQuery: string) => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    
+    if (insightsCache[normalizedQuery]) {
+      setInsights(insightsCache[normalizedQuery]);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await getRealtimeInsights(searchQuery);
+      insightsCache[normalizedQuery] = res;
       setInsights(res);
     } catch {
       setInsights(["Unable to fetch AI insights at this time."]);
@@ -55,18 +66,29 @@ export function InsightsPanel({ defaultZip = "10001" }: InsightsPanelProps) {
             value={query} 
             onChange={(e) => setQuery(e.target.value)} 
             placeholder="Enter Zip, City, or Constituency (e.g., Kolkata North)" 
-            className="bg-input/50"
+            className="bg-input/50 focus-visible:ring-primary/50 transition-shadow"
           />
-          <Button type="submit" disabled={loading} size="icon" className="shrink-0 shadow-lg shadow-primary/20">
+          <Button type="submit" disabled={loading} size="icon" className="shrink-0 shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
             <Search className="h-4 w-4" />
           </Button>
         </form>
 
         <div className="space-y-3 mt-2 max-h-[300px] overflow-y-auto pr-1">
           {loading ? (
-            <div className="space-y-2">
-              <div className="h-16 rounded bg-muted animate-pulse" />
-              <div className="h-16 rounded bg-muted animate-pulse" />
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-3 bg-background/50 rounded-lg border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-3 w-3 rounded-full bg-primary/30 animate-pulse" />
+                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                  </div>
+                  <div className="space-y-1.5 mt-2">
+                    <div className="h-2 w-full bg-muted/60 rounded animate-pulse" />
+                    <div className="h-2 w-5/6 bg-muted/60 rounded animate-pulse" />
+                    <div className="h-2 w-4/6 bg-muted/60 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : insights.map((insight, index) => (
             <div key={index} className="p-3 bg-background/50 rounded-lg border border-border animate-in fade-in slide-in-from-bottom-2 duration-300">

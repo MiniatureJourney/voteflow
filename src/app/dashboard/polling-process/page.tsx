@@ -1,9 +1,10 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useJourneyStore } from "@/store/journeyStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function PollingProcessPage() {
   const setJourneyStep = useJourneyStore((state) => state.setStep);
@@ -40,16 +41,18 @@ export default function PollingProcessPage() {
       </Card>
 
       <div className="flex justify-between pt-6 border-t border-border mt-4">
-        <Button onClick={() => router.push('/dashboard')} variant="outline">Back to Dashboard</Button>
-        <Button 
+        <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>
+          Back to Dashboard
+        </Link>
+        <Link 
+          href="/dashboard"
           onClick={() => {
             setJourneyStep('post_vote');
-            router.push('/dashboard');
           }} 
-          className="shadow-lg shadow-primary/20 font-semibold"
+          className={buttonVariants({ className: "shadow-lg shadow-primary/20 font-semibold" })}
         >
           Mark as Completed
-        </Button>
+        </Link>
       </div>
     </div>
   );
