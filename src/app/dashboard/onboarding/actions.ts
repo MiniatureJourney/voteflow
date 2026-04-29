@@ -25,23 +25,27 @@ export async function submitOnboarding(data: z.infer<typeof onboardingSchema>) {
 
   const { error: profileError } = await supabase
     .from('profiles')
-    .update({
+    .upsert({
+      id: user.id,
       dob: parsed.data.dob,
       zip_code: parsed.data.zip_code,
     })
-    .eq('id', user.id)
 
   if (profileError) throw profileError
 
   await supabase
     .from('settings')
-    .update({ language: parsed.data.language })
-    .eq('user_id', user.id)
+    .upsert({ 
+      user_id: user.id,
+      language: parsed.data.language 
+    })
 
   const { error: journeyError } = await supabase
     .from('election_journeys')
-    .update({ current_step: 'eligibility' })
-    .eq('user_id', user.id)
+    .upsert({ 
+      user_id: user.id,
+      current_step: 'eligibility' 
+    })
 
   if (journeyError) throw journeyError
 

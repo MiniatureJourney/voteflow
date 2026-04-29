@@ -5,7 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function RegisterPage() {
+export default async function RegisterPage(props: { searchParams: Promise<{ message?: string }> }) {
+  const searchParams = await props.searchParams;
+  const message = searchParams.message;
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
@@ -14,6 +17,11 @@ export default function RegisterPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
           <CardDescription>Enter your details to create your VoteFlow account</CardDescription>
+          {message && (
+            <div className="p-3 bg-destructive/15 border border-destructive/30 rounded-md text-xs text-destructive font-medium text-center mt-2 animate-pulse">
+              {decodeURIComponent(message)}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <form action={signup} className="space-y-4">

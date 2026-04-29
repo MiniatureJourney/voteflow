@@ -5,7 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function LoginPage() {
+export default async function LoginPage(props: { searchParams: Promise<{ message?: string }> }) {
+  const searchParams = await props.searchParams;
+  const message = searchParams.message;
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
@@ -14,6 +17,11 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
           <CardDescription>Enter your email below to access your VoteFlow dashboard</CardDescription>
+          {message && (
+            <div className="p-3 bg-destructive/15 border border-destructive/30 rounded-md text-xs text-destructive font-medium text-center mt-2 animate-pulse">
+              {decodeURIComponent(message)}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <form action={login} className="space-y-4">
