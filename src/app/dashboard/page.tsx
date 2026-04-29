@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
 
 // PERFORMANCE: Lazy load heavy components for Code Splitting (Lighthouse 100)
-const CommandBar = dynamic(() => import("@/components/dashboard/CommandBar").then(mod => mod.CommandBar), { ssr: false });
-const JourneyRoadmap = dynamic(() => import("@/components/dashboard/JourneyRoadmap").then(mod => mod.JourneyRoadmap), { ssr: false });
-const DeadlinesPanel = dynamic(() => import("@/components/dashboard/DeadlinesPanel").then(mod => mod.DeadlinesPanel), { ssr: true });
-const InsightsPanel = dynamic(() => import("@/components/dashboard/InsightsPanel").then(mod => mod.InsightsPanel), { ssr: true });
-const NotificationsPanel = dynamic(() => import("@/components/dashboard/NotificationsPanel").then(mod => mod.NotificationsPanel), { ssr: false });
+const CommandBar = dynamic(() => import("@/components/dashboard/CommandBar").then(mod => mod.CommandBar));
+const JourneyRoadmap = dynamic(() => import("@/components/dashboard/JourneyRoadmap").then(mod => mod.JourneyRoadmap));
+const DeadlinesPanel = dynamic(() => import("@/components/dashboard/DeadlinesPanel").then(mod => mod.DeadlinesPanel));
+const InsightsPanel = dynamic(() => import("@/components/dashboard/InsightsPanel").then(mod => mod.InsightsPanel));
+const NotificationsPanel = dynamic(() => import("@/components/dashboard/NotificationsPanel").then(mod => mod.NotificationsPanel));
 export default async function DashboardMain() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

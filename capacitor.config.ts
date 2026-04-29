@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.voteflow.app',
   appName: 'VoteFlow',
   webDir: 'public', // Fallback web directory
-  bundledWebRuntime: false,
+
   server: {
     // For an SSR Next.js app, we wrap the deployed Vercel URL to act as a native container
     url: 'https://voteflow-demo.vercel.app', 

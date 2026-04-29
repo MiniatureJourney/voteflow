@@ -10,7 +10,7 @@ export default function OnboardingPage() {
       <div className="relative z-10 w-full max-w-md flex flex-col items-center">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Welcome to VoteFlow</h1>
-          <p className="text-muted-foreground mt-2">Let's personalize your election journey.</p>
+          <p className="text-muted-foreground mt-2">Let&apos;s personalize your election journey.</p>
         </div>
         <OnboardingWizard />
       </div>

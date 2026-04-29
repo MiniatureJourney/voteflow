@@ -4,7 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { submitOnboarding } from "@/app/(dashboard)/onboarding/actions";
+import { submitOnboarding } from "@/app/dashboard/onboarding/actions";
 import { useJourneyStore } from "@/store/journeyStore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ const schema = z.object({
   dob: z.string().min(1, "Date of birth is required"),
   citizenship: z.enum(["yes", "no"]),
   zip_code: z.string().min(5, "Valid Zip Code is required"),
-  language: z.string().default("en"),
+  language: z.string(),
 });
 
 export function OnboardingWizard() {
@@ -53,7 +53,7 @@ export function OnboardingWizard() {
         setJourneyStep("eligibility");
         router.push("/dashboard");
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred during setup.");
     } finally {
       setLoading(false);
