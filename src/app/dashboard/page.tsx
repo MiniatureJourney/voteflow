@@ -23,6 +23,14 @@ export default async function DashboardMain() {
   // Fallback name if metadata doesn't have full_name
   const name = user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || "Voter";
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('zip_code')
+    .eq('id', user.id)
+    .single();
+
+  const defaultZip = profile?.zip_code || "10001";
+
   return (
     <div className="min-h-screen bg-background text-foreground p-4 md:p-8">
       <CommandBar />
@@ -67,7 +75,7 @@ export default async function DashboardMain() {
 
         {/* AI Insights */}
         <div className="col-span-1">
-          <InsightsPanel />
+          <InsightsPanel defaultZip={defaultZip} />
         </div>
 
         {/* Notifications */}
