@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const steps: { id: JourneyState; label: string }[] = [
   { id: 'NOT_REGISTERED', label: 'Check Eligibility' },
@@ -17,6 +18,7 @@ const steps: { id: JourneyState; label: string }[] = [
 
 export function JourneyRoadmap() {
   const currentStep = useJourneyStore(state => state.currentStep) as string;
+  const router = useRouter();
   
   const engineState: JourneyState = currentStep === 'onboarding' ? 'NOT_REGISTERED' :
     currentStep === 'eligibility' ? 'REGISTER' :
@@ -64,7 +66,7 @@ export function JourneyRoadmap() {
             <h4 className="font-semibold text-foreground">Next Action Required</h4>
             <p className="text-sm text-muted-foreground">{action.label}</p>
           </div>
-          <Button className="shadow-lg shadow-primary/20 group">
+          <Button onClick={() => router.push(action.href)} className="shadow-lg shadow-primary/20 group">
             Start <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

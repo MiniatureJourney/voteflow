@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     // Edge function ready endpoint
     return NextResponse.json({ success: true, to: phone, reply });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: "Invalid payload" }, { status: 400 });
   }
 }

@@ -2,6 +2,9 @@ import { createClient } from "@/utils/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
+import { logout } from "@/app/(auth)/actions";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 // PERFORMANCE: Lazy load heavy components for Code Splitting (Lighthouse 100)
 const CommandBar = dynamic(() => import("@/components/dashboard/CommandBar").then(mod => mod.CommandBar));
@@ -41,6 +44,12 @@ export default async function DashboardMain() {
               {name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
+          
+          <form action={logout}>
+            <Button type="submit" variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </form>
         </div>
       </header>
 

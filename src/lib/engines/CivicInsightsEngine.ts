@@ -13,7 +13,7 @@ export class CivicInsightsEngine {
     if (!process.env.GEMINI_API_KEY) {
       // Rule-based fallback
       return [
-        "State Prop 14 aims to fund new public school infrastructure.",
+        `(${zipCode}) State Prop 14 aims to fund new public school infrastructure.`,
         "Your district typically sees a 45% turnout in midterms."
       ];
     }
@@ -23,7 +23,7 @@ export class CivicInsightsEngine {
         "AI Analysis: Prop 14 is highly contested locally. Proponents cite school overcrowding; opponents cite property tax increases.",
         "AI Prediction: Expected wait times at your booth peak between 5PM and 7PM. Plan to vote early."
       ];
-    } catch (e) {
+    } catch {
       return ["Unable to fetch live AI insights at this time."];
     }
   }

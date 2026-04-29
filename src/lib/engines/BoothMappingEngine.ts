@@ -21,6 +21,7 @@ export class BoothMappingEngine {
   static async locateNearestBooths(userLocation: LocationData | string): Promise<PollingBooth[]> {
     // Edge-function ready: In production this calls Google Civic API / Maps Matrix API
     // Stubbing a modular payload for real-time frontend consumption
+    void userLocation;
     
     return [
       {

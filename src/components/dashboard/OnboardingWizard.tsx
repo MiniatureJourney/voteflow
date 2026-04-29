@@ -130,9 +130,25 @@ export function OnboardingWizard() {
                 Back
               </Button>
             ) : <div></div>}
-            <Button type="submit" disabled={loading} className="font-semibold shadow-lg shadow-primary/20">
-              {step === 4 ? (loading ? "Saving..." : "Complete Setup") : "Next"}
-            </Button>
+            {step === 4 ? (
+              <Button type="submit" disabled={loading} className="font-semibold shadow-lg shadow-primary/20">
+                {loading ? "Saving..." : "Complete Setup"}
+              </Button>
+            ) : (
+              <Button 
+                type="button" 
+                onClick={async () => {
+                  let isValid = false;
+                  if (step === 1) isValid = await form.trigger("dob");
+                  if (step === 2) isValid = await form.trigger("citizenship");
+                  if (step === 3) isValid = await form.trigger("zip_code");
+                  if (isValid) setStep(step + 1);
+                }} 
+                className="font-semibold shadow-lg shadow-primary/20"
+              >
+                Next
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>
