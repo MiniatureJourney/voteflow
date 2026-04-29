@@ -66,10 +66,11 @@ export async function getRealtimeInsights(query: string) {
       tools: [{ googleSearch: {} }] as any
     });
     
-    const prompt = `You are a factual, real-time civic AI assistant. 
-Provide highly detailed, current election insights (active/upcoming measures, candidates, voting guidelines) for this specific request: "${query}". 
-If there are absolutely no active or scheduled upcoming elections at this place, reply: "There are currently no active or upcoming elections scheduled for this location."
-Provide the output as a series of short independent paragraphs without heavy markdown styling.`;
+    const prompt = `You are a factual, real-time civic AI news assistant. 
+Using Google Search grounding, identify the most recent breaking local news headlines, candidate profiles, and important administrative timelines regarding elections in: "${query}". 
+Extract exactly 3 distinct local election insights or news briefs. 
+If there are absolutely no active or scheduled upcoming elections or election news at this place, state: "There are currently no active or upcoming elections scheduled for this location."
+Format your output strictly as separate independent news headlines, omitting excess introductory text.`;
     
     const result = await model.generateContent(prompt);
     const text = result.response.text();
